@@ -1,7 +1,6 @@
+import 'package:SpeedCuber/Screens/TimerPage/Timer.dart';
 import 'package:flutter/material.dart';
 import 'package:SpeedCuber/classes/curent_time.dart';
-import 'package:SpeedCuber/classes/dependencies.dart';
-import 'package:SpeedCuber/classes/clock_painter.dart';
 
 class TimerClock extends StatefulWidget {
   final Dependencies dependencies;
@@ -32,33 +31,35 @@ class TimerClockState extends State<TimerClock> {
     currentTime = widget.dependencies.transformMilliSecondsToTime(
         widget.dependencies.stopwatch.elapsedMilliseconds);
 
-    return CustomPaint(
-      painter: ClockPainter(
-          lineColor: Colors.lightBlueAccent,
-          completeColor: Colors.blueAccent,
-          hundreds: currentTime.hundreds,
-          seconds: currentTime.seconds,
-          minutes: currentTime.minutes,
-          width: 4.0,
-          linePaint: paint),
-      child: Container(
-        alignment: Alignment.center,
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              '${currentTime.minutes.toString().padLeft(2, '0')} : ${currentTime.seconds.toString().padLeft(2, '0')}',
-              style: TextStyle(fontSize: 48.0),
+    return new Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+          new Container(
+            child: new SizedBox(
+              height: 100.0,
+              child: new Text(
+              '${currentTime.minutes.toString()}:',
+              style: TextStyle(fontSize: 90.0),
             ),
-            Text(
+            ),
+          ),
+          new Container(
+            child: new SizedBox(
+              height: 100.0,
+              child: new Text(
+              '${currentTime.seconds.toString()}.',
+              style: TextStyle(fontSize: 90.0),),
+            ),
+          ),
+          new Container(
+            child: new SizedBox(
+              height: 80.0,
+              child: new Text(
               currentTime.hundreds.toString().padLeft(2, '0'),
-              style: TextStyle(fontSize: 24.0),
-            )
-          ],
-        ),
-      ),
+              style: TextStyle(fontSize: 75.0),),
+            ),
+          ),
+      ],
     );
   }
 }

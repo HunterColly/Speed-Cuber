@@ -2,20 +2,10 @@
 import 'package:flutter/material.dart';
 import 'package:SpeedCuber/Screens/TimerPage/Timer.dart';
 import 'package:SpeedCuber/Screens/TimerPage/Times.dart';
-
-void main() => runApp(MyApp());
-
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Timer Control',
-      home: TimerMain(),
-    );
-  }
-}
+import 'package:shared_preferences/shared_preferences.dart';
 
 class TimerMain extends StatefulWidget {
+
   TimerMain({Key key}) : super(key: key);
 
   @override
@@ -23,10 +13,9 @@ class TimerMain extends StatefulWidget {
 }
 
 class _TimerMainState extends State<TimerMain> {
-
   var _pages = [
   MainScreenPortrait(), 
-  Times()
+  TimesPage()
   ];
   var _pageController = PageController();
 

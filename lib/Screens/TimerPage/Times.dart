@@ -1,38 +1,40 @@
-import 'package:SpeedCuber/classes/dependencies.dart';
+import 'package:SpeedCuber/Screens/TimerPage/Timer.dart';
 import 'package:flutter/material.dart';
 
-void main() => runApp(Times());
+class TimesPage extends StatefulWidget {
 
-class Times extends StatelessWidget {
+  TimesPage({Key key}) : super(key: key);
+
   @override
-  Widget build (BuildContext context) {
-    return new MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: "Profile",
-      darkTheme: ThemeData.dark(
+  _TimesPageState createState() => _TimesPageState();
+}
 
-      ),
+class _TimesPageState extends State <TimesPage> {
+final Dependencies dependencies = new Dependencies();
 
-      home: MyStatefulWidget(),
+@override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        Expanded(
+          child: ListView.builder(
+              itemCount: dependencies.savedTimeList.length,
+              itemBuilder: (context, index) =>
+              Text(createListItemText(
+                            dependencies.savedTimeList.length,
+                            index,
+                            dependencies.savedTimeList.elementAt(index)),
+                        style: TextStyle(fontSize: 24.0),)
+              ),
+        ),
+        //Text('$savedTimeList')
+      ],
     );
   }
 }
 
-class MyStatefulWidget extends StatefulWidget {
-  final Dependencies dependencies;
-
-  MyStatefulWidget ({Key key, this.dependencies}) : super(key: key);
-
-  @override
-  _MyStatefulWidgetState createState() => _MyStatefulWidgetState();
-}
-
-class _MyStatefulWidgetState extends State <MyStatefulWidget> {
-  Widget build (BuildContext context) {
-      return Container(
-      child: Scaffold(
-        backgroundColor: Colors.black,
-      ),
-    );
+  String createListItemText(int listSize, int index, String time) {
+    index = listSize - index;
+    return '$time';
   }
-}

@@ -1,17 +1,49 @@
 import 'dart:async';
-import 'package:SpeedCuber/classes/dependencies.dart';
+import 'package:SpeedCuber/classes/curent_time.dart';
 import 'package:SpeedCuber/widgets/timer_clock.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+class Dependencies {
+  final Stopwatch stopwatch = new Stopwatch();
+
+  final List<String> savedTimeList = List<String>();
+
+  transformMilliSecondsToString(int milliseconds) {
+    int hundreds = (milliseconds / 10).truncate();
+    int seconds = (hundreds / 100).truncate();
+    int minutes = (seconds / 60).truncate();
+
+    String hundredsStr = (hundreds % 100).toString().padLeft(2, '0');
+    String secondsStr = (seconds % 60).toString();
+    String minutesStr = (minutes % 60).toString();
+
+    return '$minutesStr : $secondsStr.$hundredsStr';
+  }
+
+  transformMilliSecondsToTime(int milliseconds) {
+    int hundreds = (milliseconds / 10).truncate();
+    int seconds = (hundreds / 100).truncate();
+    int minutes = (seconds / 60).truncate();
+
+    return CurrentTime(
+        hundreds: hundreds % 100,
+        seconds: seconds % 60,
+        minutes: minutes % 60,);
+  }
+}
+
 
 class MainScreenPortrait extends StatefulWidget {
-  final Dependencies dependencies;
 
-  MainScreenPortrait({Key key, this.dependencies}) : super(key: key);
+  MainScreenPortrait({Key key}) : super(key: key);
 
   MainScreenPortraitState createState() => MainScreenPortraitState();
 }
 
 class MainScreenPortraitState extends State<MainScreenPortrait> {
+  final Dependencies dependencies = new Dependencies();
+
   Icon leftButtonIcon;
   Icon rightButtonIcon;
 
@@ -21,7 +53,7 @@ class MainScreenPortraitState extends State<MainScreenPortrait> {
   Timer timer;
 
   updateTime(Timer timer) {
-    if (widget.dependencies.stopwatch.isRunning) {
+    if (dependencies.stopwatch.isRunning) {
       setState(() {});
     } else {
       timer.cancel();
@@ -30,8 +62,8 @@ class MainScreenPortraitState extends State<MainScreenPortrait> {
 
   @override
   void initState() {
-    if (widget.dependencies.stopwatch.isRunning) {
-      timer = new Timer.periodic(new Duration(milliseconds: 20), updateTime);
+    if (dependencies.stopwatch.isRunning) {
+      timer = new Timer.periodic(new Duration(milliseconds: 1), updateTime);
             leftButtonIcon = Icon(Icons.pause);
       leftButtonColor = Colors.red;
       rightButtonIcon = Icon(
@@ -62,54 +94,47 @@ class MainScreenPortraitState extends State<MainScreenPortrait> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
-        Container(
-          child: TimerClock(widget.dependencies),
-        ),
-        Expanded(
+        new GestureDetector(
+          onTap: ()=> startOrStopWatch(),
+          child: new Container(
+          child: TimerClock(dependencies),
+          height: 500,
+          color: Colors.blue,
+        ),),
+                Expanded(
           child: ListView.builder(
-              itemCount: widget.dependencies.savedTimeList.length,
+              itemCount: dependencies.savedTimeList.length,
               itemBuilder: (context, index) {
                 return ListTile(
                   title: Container(
                       alignment: Alignment.center,
+                      color: Colors.green,
                       child: Text(
                         createListItemText(
-                            widget.dependencies.savedTimeList.length,
+                            dependencies.savedTimeList.length,
                             index,
-                            widget.dependencies.savedTimeList.elementAt(index)),
+                            dependencies.savedTimeList.elementAt(index)),
                         style: TextStyle(fontSize: 24.0),
                       )),
                 );
               }),
         ),
-        //Text('$savedTimeList')
       ],
     );
   }
 
   startOrStopWatch() {
-    if (widget.dependencies.stopwatch.isRunning) {
-            leftButtonIcon = Icon(Icons.play_arrow);
-      leftButtonColor = Colors.green;
-      rightButtonIcon = Icon(Icons.refresh);
-      rightButtonColor = Colors.blue;
-      widget.dependencies.stopwatch.stop();
-              widget.dependencies.savedTimeList.insert(
+    if (dependencies.stopwatch.isRunning) {
+      dependencies.stopwatch.stop();
+              dependencies.savedTimeList.insert(
             0,
-            widget.dependencies.transformMilliSecondsToString(
-                widget.dependencies.stopwatch.elapsedMilliseconds));
+            dependencies.transformMilliSecondsToString(
+                dependencies.stopwatch.elapsedMilliseconds));
       setState(() {});
     } else {
-            leftButtonIcon = Icon(Icons.pause);
-      leftButtonColor = Colors.red;
-      rightButtonIcon = Icon(
-        Icons.fiber_manual_record,
-        color: Colors.red,
-      );
-      rightButtonColor = Colors.white70;
-      widget.dependencies.stopwatch.start();
-      timer = new Timer.periodic(new Duration(milliseconds: 20), updateTime);
-      widget.dependencies.stopwatch.reset();
+      dependencies.stopwatch.start();
+      timer = new Timer.periodic(new Duration(milliseconds: 1), updateTime);
+      dependencies.stopwatch.reset();
     }
   }
 
@@ -117,4 +142,5 @@ class MainScreenPortraitState extends State<MainScreenPortrait> {
     index = listSize - index;
     return '$time';
   }
+
 }
