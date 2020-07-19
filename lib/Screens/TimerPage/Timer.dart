@@ -98,8 +98,8 @@ class MainScreenPortraitState extends State<MainScreenPortrait> {
           onTap: ()=> startOrStopWatch(),
           child: new Container(
           child: TimerClock(dependencies),
-          height: 500,
-          color: Colors.blue,
+          height: 700,
+          color: Colors.black,
         ),),
                 Expanded(
           child: ListView.builder(
@@ -107,14 +107,15 @@ class MainScreenPortraitState extends State<MainScreenPortrait> {
               itemBuilder: (context, index) {
                 return ListTile(
                   title: Container(
+                      height: 40,
                       alignment: Alignment.center,
-                      color: Colors.green,
+
                       child: Text(
                         createListItemText(
                             dependencies.savedTimeList.length,
                             index,
                             dependencies.savedTimeList.elementAt(index)),
-                        style: TextStyle(fontSize: 24.0),
+                        style: TextStyle(fontSize: 30.0, fontWeight: FontWeight.bold),
                       )),
                 );
               }),

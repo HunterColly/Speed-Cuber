@@ -39,7 +39,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage>{
-  int _page = 2;
+  int _page = 1;
 
   final _pageOption = [
     SettingsTab(),
@@ -69,7 +69,7 @@ class _MyHomePageState extends State<MyHomePage>{
               Icon(Icons.list, size: 25, color: Colors.black),
               Icon(Icons.person, size: 25, color: Colors.black),
               ],
-              index: 2,
+              index: 1,
               onTap: (index) {
                 setState(() {
                   _page = index;

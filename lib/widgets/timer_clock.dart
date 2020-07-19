@@ -39,7 +39,7 @@ class TimerClockState extends State<TimerClock> {
               height: 100.0,
               child: new Text(
               '${currentTime.minutes.toString()}:',
-              style: TextStyle(fontSize: 90.0),
+              style: TextStyle(fontSize: 90.0, fontFamily: 'Quicksand', fontWeight: FontWeight.bold, color: Color(0xFF00FFFF),),
             ),
             ),
           ),
@@ -48,7 +48,7 @@ class TimerClockState extends State<TimerClock> {
               height: 100.0,
               child: new Text(
               '${currentTime.seconds.toString()}.',
-              style: TextStyle(fontSize: 90.0),),
+              style: TextStyle(fontSize: 90.0, fontFamily: 'Quicksand', fontWeight: FontWeight.bold, color: Color(0xFF00FFFF),),),
             ),
           ),
           new Container(
@@ -56,7 +56,7 @@ class TimerClockState extends State<TimerClock> {
               height: 80.0,
               child: new Text(
               currentTime.hundreds.toString().padLeft(2, '0'),
-              style: TextStyle(fontSize: 75.0),),
+              style: TextStyle(fontSize: 75.0, fontFamily: 'Quicksand', fontWeight: FontWeight.bold, color: Color(0xFF00FFFF),),),
             ),
           ),
       ],

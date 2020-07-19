@@ -26,21 +26,14 @@ class MyStatefulWidget extends StatefulWidget {
 
 class _MyStatefulWidgetState extends State <MyStatefulWidget> {
   Widget build (BuildContext context) {
-      return Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: 
-            [Color(0xFF414C50), 
-            Color(0xFF2D383C)]
-            ),
-          ),
-        child: Scaffold(
-          backgroundColor: Colors.transparent,
+    return Container(
+      child: Scaffold(
+        backgroundColor: Colors.black,
         body: Center(
-          child: Text('Profile')
+          child: Text('This Page Is In Development!',
+          style: TextStyle(color: Colors.white)
         ),
+      ),
       ),
     );
   }
