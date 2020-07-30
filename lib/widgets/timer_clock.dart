@@ -12,14 +12,7 @@ class TimerClock extends StatefulWidget {
 
 class TimerClockState extends State<TimerClock> {
   CurrentTime currentTime;
-
-  Paint paint;
-
-  @override
-  void initState() {
-    paint = new Paint();
-    super.initState();
-  }
+  TextStyle timerText;
 
   @override
   void dispose() {
@@ -30,7 +23,7 @@ class TimerClockState extends State<TimerClock> {
   Widget build(BuildContext context) {
     currentTime = widget.dependencies.transformMilliSecondsToTime(
         widget.dependencies.stopwatch.elapsedMilliseconds);
-
+  
     return new Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
@@ -39,26 +32,44 @@ class TimerClockState extends State<TimerClock> {
               height: 100.0,
               child: new Text(
               '${currentTime.minutes.toString()}:',
-              style: TextStyle(fontSize: 90.0, fontFamily: 'Quicksand', fontWeight: FontWeight.bold, color: Color(0xFF00FFFF),),
+              style: TextStyle(
+                  fontSize: 90.0, 
+                  fontFamily: 'Quicksand', 
+                  fontWeight: FontWeight.bold, 
+                  color: Color(0xFF00FFFF)
+                  ),
+                ),
+              ),
             ),
-            ),
-          ),
           new Container(
             child: new SizedBox(
               height: 100.0,
               child: new Text(
               '${currentTime.seconds.toString()}.',
-              style: TextStyle(fontSize: 90.0, fontFamily: 'Quicksand', fontWeight: FontWeight.bold, color: Color(0xFF00FFFF),),),
+              style: TextStyle(
+                fontSize: 90.0,
+                fontFamily: 'Quicksand',
+                fontWeight: FontWeight.bold,
+                color: Color(0xFF00FFFF) 
+                ),
+              ),
             ),
           ),
           new Container(
+            padding: EdgeInsets.fromLTRB(0, 20, 0, 0),
             child: new SizedBox(
               height: 80.0,
               child: new Text(
               currentTime.hundreds.toString().padLeft(2, '0'),
-              style: TextStyle(fontSize: 75.0, fontFamily: 'Quicksand', fontWeight: FontWeight.bold, color: Color(0xFF00FFFF),),),
+              style: TextStyle(
+                fontSize: 70.0,
+                fontFamily: 'Quicksand',
+                fontWeight: FontWeight.bold,
+                color: Color(0xFF00FFFF) 
+              ),
             ),
           ),
+        ),
       ],
     );
   }

@@ -1,7 +1,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:SpeedCuber/Screens/TimerPage/Timer.dart';
-import 'package:SpeedCuber/Screens/TimerPage/Times.dart';
 
 class TimerMain extends StatefulWidget {
 
@@ -13,7 +12,7 @@ class TimerMain extends StatefulWidget {
 
 class _TimerMainState extends State<TimerMain> {
   var _pages = [
-  MainScreenPortrait(), 
+  TimerPage(), 
   ];
   var _pageController = PageController();
 

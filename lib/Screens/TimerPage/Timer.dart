@@ -2,7 +2,8 @@ import 'dart:async';
 import 'package:SpeedCuber/classes/curent_time.dart';
 import 'package:SpeedCuber/widgets/timer_clock.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sliding_up_panel/sliding_up_panel.dart';
+import 'package:flutter/src/painting/box_border.dart';
 
 class Dependencies {
   final Stopwatch stopwatch = new Stopwatch();
@@ -34,23 +35,18 @@ class Dependencies {
 }
 
 
-class MainScreenPortrait extends StatefulWidget {
+class TimerPage extends StatefulWidget {
 
-  MainScreenPortrait({Key key}) : super(key: key);
+  TimerPage({Key key}) : super(key: key);
 
-  MainScreenPortraitState createState() => MainScreenPortraitState();
+  TimerPageState createState() => TimerPageState();
 }
 
-class MainScreenPortraitState extends State<MainScreenPortrait> {
+class TimerPageState extends State<TimerPage> {
   final Dependencies dependencies = new Dependencies();
-
-  Icon leftButtonIcon;
-  Icon rightButtonIcon;
-
-  Color leftButtonColor;
-  Color rightButtonColor;
-
+  TimerClock timerClock;
   Timer timer;
+
 
   updateTime(Timer timer) {
     if (dependencies.stopwatch.isRunning) {
@@ -63,19 +59,8 @@ class MainScreenPortraitState extends State<MainScreenPortrait> {
   @override
   void initState() {
     if (dependencies.stopwatch.isRunning) {
-      timer = new Timer.periodic(new Duration(milliseconds: 1), updateTime);
-            leftButtonIcon = Icon(Icons.pause);
-      leftButtonColor = Colors.red;
-      rightButtonIcon = Icon(
-        Icons.fiber_manual_record,
-        color: Colors.red,
-      );
-      rightButtonColor = Colors.white70;
+      timer = new Timer.periodic(new Duration(milliseconds: 20), updateTime);
     } else {
-      leftButtonIcon = Icon(Icons.play_arrow);
-      leftButtonColor = Colors.green;
-      rightButtonIcon = Icon(Icons.refresh);
-      rightButtonColor = Colors.blue;
     }
     super.initState();
   }
@@ -91,36 +76,51 @@ class MainScreenPortraitState extends State<MainScreenPortrait> {
 
 @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: <Widget>[
-        new GestureDetector(
-          onTap: ()=> startOrStopWatch(),
-          child: new Container(
-          child: TimerClock(dependencies),
-          height: 700,
-          color: Colors.black,
-        ),),
-                Expanded(
-          child: ListView.builder(
-              itemCount: dependencies.savedTimeList.length,
-              itemBuilder: (context, index) {
-                return ListTile(
-                  title: Container(
-                      height: 40,
-                      alignment: Alignment.center,
-
-                      child: Text(
-                        createListItemText(
-                            dependencies.savedTimeList.length,
-                            index,
-                            dependencies.savedTimeList.elementAt(index)),
-                        style: TextStyle(fontSize: 30.0, fontWeight: FontWeight.bold),
-                      )),
-                );
-              }),
+    return Scaffold(
+      body: SlidingUpPanel(
+        borderRadius: BorderRadius.only(
+      topLeft: const Radius.circular(30.0),
+      topRight: const Radius.circular(30.0),
+    ),
+        color: Colors.pink,
+        backdropOpacity: 1.0,
+        backdropEnabled: true,
+        parallaxEnabled: true,
+        parallaxOffset: .5,
+        panelBuilder: (ScrollController sc) => _scrollingList(sc),
+        body: Center(
+          child: new GestureDetector(
+              onTap: ()=> startOrStopWatch(),
+              child: new Container(
+              child: TimerClock(dependencies),
+              height: 1000,
+              color: Colors.black87,
+            ),),
+            ),
         ),
-      ],
+    );
+  }
+
+  Widget _scrollingList(ScrollController sc){
+    return ListView.builder(
+      itemCount: dependencies.savedTimeList.length,
+      itemBuilder: (context, index) =>
+      new ListTile(
+        title: Container(
+        alignment: Alignment.center,
+        child: Text(
+          createListItemText(
+            dependencies.savedTimeList.length,
+            index,
+            dependencies.savedTimeList.elementAt(index)),
+              style: TextStyle(
+            fontSize: 30.0,
+            fontFamily: 'Quicksand',
+            fontWeight: FontWeight.bold,
+            color: Color(0xFF00FFFF) 
+          ),
+        )),
+      ),
     );
   }
 
@@ -134,7 +134,7 @@ class MainScreenPortraitState extends State<MainScreenPortrait> {
       setState(() {});
     } else {
       dependencies.stopwatch.start();
-      timer = new Timer.periodic(new Duration(milliseconds: 1), updateTime);
+      timer = new Timer.periodic(new Duration(milliseconds: 20), updateTime);
       dependencies.stopwatch.reset();
     }
   }

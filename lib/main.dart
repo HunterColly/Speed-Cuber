@@ -2,8 +2,7 @@ import 'package:SpeedCuber/Screens/Home.dart';
 import 'package:SpeedCuber/Screens/Profile.dart';
 import 'package:SpeedCuber/Screens/Progress.dart';
 import 'package:SpeedCuber/Screens/SettingsTab.dart';
-import 'package:SpeedCuber/Screens/TimerPage/Main.dart';
-import 'package:SpeedCuber/classes/dependencies.dart';
+import 'package:SpeedCuber/Screens/TimerPage/Timer.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -32,7 +31,6 @@ class MyHomePage extends StatefulWidget {
   MyHomePage({Key key, this.title}) : super(key: key);
 
   final String title;
-  final Dependencies dependencies = new Dependencies();
 
   @override
   _MyHomePageState createState() => _MyHomePageState();
@@ -43,7 +41,7 @@ class _MyHomePageState extends State<MyHomePage>{
 
   final _pageOption = [
     SettingsTab(),
-    TimerMain(),
+    TimerPage(),
     HomePage(),
     Progress(),
     Profile(),
@@ -55,7 +53,7 @@ class _MyHomePageState extends State<MyHomePage>{
       child: Scaffold(
         bottomNavigationBar: CurvedNavigationBar(
           color: Colors.white,
-          backgroundColor: Colors.black,
+          backgroundColor: Colors.black87,
           buttonBackgroundColor: Colors.white,
           height: 50,
           animationDuration: Duration(
