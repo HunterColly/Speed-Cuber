@@ -1,4 +1,4 @@
-import 'package:SpeedCuber/Screens/TimerPage/Timer.dart';
+import 'package:SpeedCuber/Screens/Timer.dart';
 import 'package:flutter/material.dart';
 import 'package:SpeedCuber/classes/curent_time.dart';
 

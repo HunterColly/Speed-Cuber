@@ -2,7 +2,7 @@ import 'package:SpeedCuber/Screens/Home.dart';
 import 'package:SpeedCuber/Screens/Profile.dart';
 import 'package:SpeedCuber/Screens/Progress.dart';
 import 'package:SpeedCuber/Screens/SettingsTab.dart';
-import 'package:SpeedCuber/Screens/TimerPage/Timer.dart';
+import 'package:SpeedCuber/Screens/Timer.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
