@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:SpeedCuber/classes/curent_time.dart';
 import 'package:SpeedCuber/widgets/timer_clock.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_grid_delegate_ext/rendering/grid_delegate.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:flutter/src/painting/box_border.dart';
 
@@ -82,12 +83,12 @@ class TimerPageState extends State<TimerPage> {
       topLeft: const Radius.circular(30.0),
       topRight: const Radius.circular(30.0),
     ),
-        color: Colors.pink,
+        color: Colors.black12,
         backdropOpacity: 1.0,
         backdropEnabled: true,
         parallaxEnabled: true,
         parallaxOffset: .5,
-        panelBuilder: (ScrollController sc) => _scrollingList(sc),
+        panelBuilder: (sc) => _scrollingList(sc),
         body: Center(
           child: new GestureDetector(
               onTap: ()=> startOrStopWatch(),
@@ -102,25 +103,57 @@ class TimerPageState extends State<TimerPage> {
   }
 
   Widget _scrollingList(ScrollController sc){
-    return ListView.builder(
+    new Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        Container(
+          width: 30,
+          height: 5,
+          decoration: BoxDecoration(
+            color: Colors.grey[300],
+            borderRadius: BorderRadius.all(Radius.circular(12.0))
+                ),
+              ),
+            ],
+          );
+      return new GridView.builder(
+        padding: EdgeInsets.fromLTRB(15,30,15,15),
+          gridDelegate: XSliverGridDelegate(
+              crossAxisCount: 3,
+              smallCellExtent: 60,
+              bigCellExtent: 60,
+              crossAxisSpacing: 10,
+              mainAxisSpacing: 10),
+              shrinkWrap: false,
+      controller: sc,
       itemCount: dependencies.savedTimeList.length,
-      itemBuilder: (context, index) =>
-      new ListTile(
-        title: Container(
-        alignment: Alignment.center,
-        child: Text(
-          createListItemText(
-            dependencies.savedTimeList.length,
-            index,
-            dependencies.savedTimeList.elementAt(index)),
-              style: TextStyle(
-            fontSize: 30.0,
-            fontFamily: 'Quicksand',
-            fontWeight: FontWeight.bold,
-            color: Color(0xFF00FFFF) 
+      itemBuilder: (context, index) {
+        return GridTile(
+          child: Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+              border: Border.all(
+                color: Colors.white,
+                width: 1,
+              ),
+              color: Colors.black12
+            ),
+          alignment: Alignment.center,
+            child: Text(
+              createListItemText(
+                dependencies.savedTimeList.length,
+                index,
+                dependencies.savedTimeList.elementAt(index)),
+                  style: TextStyle(
+                fontSize: 20.0,
+                fontFamily: 'Quicksand',
+                fontWeight: FontWeight.bold,
+                color: Color(0xFF00FFFF) 
+              ),
+            )
           ),
-        )),
-      ),
+        );
+      },
     );
   }
 
