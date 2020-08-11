@@ -27,6 +27,7 @@ class TimerClockState extends State<TimerClock> {
     return new Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
+        if(currentTime.minutes > 0)
           new Container(
             child: new SizedBox(
               height: 100.0,

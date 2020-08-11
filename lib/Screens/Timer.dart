@@ -4,14 +4,14 @@ import 'package:SpeedCuber/widgets/timer_clock.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_grid_delegate_ext/rendering/grid_delegate.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
-import 'package:flutter/src/painting/box_border.dart';
 
 class Dependencies {
   final Stopwatch stopwatch = new Stopwatch();
-
+  CurrentTime currentTime;
   final List<String> savedTimeList = List<String>();
 
   transformMilliSecondsToString(int milliseconds) {
+    currentTime = transformMilliSecondsToTime(stopwatch.elapsedMicroseconds);
     int hundreds = (milliseconds / 10).truncate();
     int seconds = (hundreds / 100).truncate();
     int minutes = (seconds / 60).truncate();
@@ -20,7 +20,11 @@ class Dependencies {
     String secondsStr = (seconds % 60).toString();
     String minutesStr = (minutes % 60).toString();
 
-    return '$minutesStr : $secondsStr.$hundredsStr';
+    if(currentTime.minutes > 0) {
+      return '$minutesStr:$secondsStr.$hundredsStr';
+    } else {
+      return '$secondsStr.$hundredsStr';
+    }
   }
 
   transformMilliSecondsToTime(int milliseconds) {
@@ -88,6 +92,7 @@ class TimerPageState extends State<TimerPage> {
         backdropEnabled: true,
         parallaxEnabled: true,
         parallaxOffset: .5,
+
         panelBuilder: (sc) => _scrollingList(sc),
         body: Center(
           child: new GestureDetector(
