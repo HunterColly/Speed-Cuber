@@ -1,47 +1,20 @@
 import 'dart:async';
-import 'package:SpeedCuber/classes/curent_time.dart';
+import 'dart:convert';
+import 'package:SpeedCuber/classes/dependencies.dart';
+import 'package:SpeedCuber/classes/times_Alert.dart';
+import 'package:SpeedCuber/main.dart';
 import 'package:SpeedCuber/widgets/timer_clock.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_grid_delegate_ext/rendering/grid_delegate.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
-class Dependencies {
-  final Stopwatch stopwatch = new Stopwatch();
-  CurrentTime currentTime;
-  final List<String> savedTimeList = List<String>();
-
-  transformMilliSecondsToString(int milliseconds) {
-    currentTime = transformMilliSecondsToTime(stopwatch.elapsedMicroseconds);
-    int hundreds = (milliseconds / 10).truncate();
-    int seconds = (hundreds / 100).truncate();
-    int minutes = (seconds / 60).truncate();
-
-    String hundredsStr = (hundreds % 100).toString().padLeft(2, '0');
-    String secondsStr = (seconds % 60).toString();
-    String minutesStr = (minutes % 60).toString();
-
-    if(currentTime.minutes > 0) {
-      return '$minutesStr:$secondsStr.$hundredsStr';
-    } else {
-      return '$secondsStr.$hundredsStr';
-    }
-  }
-
-  transformMilliSecondsToTime(int milliseconds) {
-    int hundreds = (milliseconds / 10).truncate();
-    int seconds = (hundreds / 100).truncate();
-    int minutes = (seconds / 60).truncate();
-
-    return CurrentTime(
-        hundreds: hundreds % 100,
-        seconds: seconds % 60,
-        minutes: minutes % 60,);
-  }
+void main() {
+  SharedPreferences.setMockInitialValues({});
+  runApp(MyApp());
 }
 
-
 class TimerPage extends StatefulWidget {
-
   TimerPage({Key key}) : super(key: key);
 
   TimerPageState createState() => TimerPageState();
@@ -49,9 +22,10 @@ class TimerPage extends StatefulWidget {
 
 class TimerPageState extends State<TimerPage> {
   final Dependencies dependencies = new Dependencies();
+  List<Dependencies> list = new List<Dependencies>();
+  SharedPreferences sharedPreferences;
   TimerClock timerClock;
   Timer timer;
-
 
   updateTime(Timer timer) {
     if (dependencies.stopwatch.isRunning) {
@@ -65,9 +39,14 @@ class TimerPageState extends State<TimerPage> {
   void initState() {
     if (dependencies.stopwatch.isRunning) {
       timer = new Timer.periodic(new Duration(milliseconds: 20), updateTime);
-    } else {
-    }
+    } else {}
+    loadSharedPreferencesAndData();
     super.initState();
+  }
+  
+  void loadSharedPreferencesAndData() async {
+    sharedPreferences = await SharedPreferences.getInstance();
+    loadData();
   }
 
   @override
@@ -79,35 +58,40 @@ class TimerPageState extends State<TimerPage> {
     super.dispose();
   }
 
-@override
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SlidingUpPanel(
         borderRadius: BorderRadius.only(
-      topLeft: const Radius.circular(30.0),
-      topRight: const Radius.circular(30.0),
-    ),
+          topLeft: const Radius.circular(30.0),
+          topRight: const Radius.circular(30.0),
+        ),
         color: Colors.black12,
         backdropOpacity: 1.0,
         backdropEnabled: true,
         parallaxEnabled: true,
         parallaxOffset: .5,
-
         panelBuilder: (sc) => _scrollingList(sc),
         body: Center(
           child: new GestureDetector(
-              onTap: ()=> startOrStopWatch(),
-              child: new Container(
+            onTap: () => startOrStopWatch(),
+            onTapDown: (TapDownDetails details){
+            setState(() {
+              onTapDownWatch();
+            });
+            },
+            child: new Container(
               child: TimerClock(dependencies),
               height: 1000,
               color: Colors.black87,
-            ),),
             ),
+          ),
         ),
+      ),
     );
   }
 
-  Widget _scrollingList(ScrollController sc){
+  Widget _scrollingList(ScrollController sc) {
     new Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
@@ -115,47 +99,44 @@ class TimerPageState extends State<TimerPage> {
           width: 30,
           height: 5,
           decoration: BoxDecoration(
-            color: Colors.grey[300],
-            borderRadius: BorderRadius.all(Radius.circular(12.0))
-                ),
-              ),
-            ],
-          );
-      return new GridView.builder(
-        padding: EdgeInsets.fromLTRB(15,30,15,15),
-          gridDelegate: XSliverGridDelegate(
-              crossAxisCount: 3,
-              smallCellExtent: 60,
-              bigCellExtent: 60,
-              crossAxisSpacing: 10,
-              mainAxisSpacing: 10),
-              shrinkWrap: false,
+              color: Colors.grey[300],
+              borderRadius: BorderRadius.all(Radius.circular(12.0))),
+        ),
+      ],
+    );
+    return new GridView.builder(
+      padding: EdgeInsets.fromLTRB(15, 30, 15, 15),
+      gridDelegate: XSliverGridDelegate(
+          crossAxisCount: 3,
+          smallCellExtent: 60,
+          bigCellExtent: 60,
+          crossAxisSpacing: 10,
+          mainAxisSpacing: 10),
+      shrinkWrap: false,
       controller: sc,
-      itemCount: dependencies.savedTimeList.length,
+      itemCount: dependencies.savedTime?.length ?? 0,
       itemBuilder: (context, index) {
         return GridTile(
-          child: Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10),
-              border: Border.all(
-                color: Colors.white,
-                width: 1,
-              ),
-              color: Colors.black12
-            ),
-          alignment: Alignment.center,
-            child: Text(
-              createListItemText(
-                dependencies.savedTimeList.length,
-                index,
-                dependencies.savedTimeList.elementAt(index)),
+          child: new GestureDetector(
+            onTap: () => TimesAlert(),
+            child: Container(
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(
+                      color: Colors.white,
+                      width: 1,
+                    ),
+                    color: Colors.black12),
+                alignment: Alignment.center,
+                child: Text(
+                  createListItemText(dependencies.savedTime.length, index,
+                      dependencies.savedTime.elementAt(index)),
                   style: TextStyle(
-                fontSize: 20.0,
-                fontFamily: 'Quicksand',
-                fontWeight: FontWeight.bold,
-                color: Color(0xFF00FFFF) 
-              ),
-            )
+                      fontSize: 20.0,
+                      fontFamily: 'Quicksand',
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xFF00FFFF)),
+                )),
           ),
         );
       },
@@ -165,14 +146,22 @@ class TimerPageState extends State<TimerPage> {
   startOrStopWatch() {
     if (dependencies.stopwatch.isRunning) {
       dependencies.stopwatch.stop();
-              dependencies.savedTimeList.insert(
-            0,
-            dependencies.transformMilliSecondsToString(
-                dependencies.stopwatch.elapsedMilliseconds));
+      dependencies.savedTime.insert(
+          0,
+          dependencies.transformMilliSecondsToString(
+              dependencies.stopwatch.elapsedMilliseconds));
       setState(() {});
     } else {
       dependencies.stopwatch.start();
       timer = new Timer.periodic(new Duration(milliseconds: 20), updateTime);
+      dependencies.stopwatch.reset();
+      saveData();
+    }
+  }
+
+  onTapDownWatch() {
+    if (dependencies.stopwatch.isRunning) {
+    } else {
       dependencies.stopwatch.reset();
     }
   }
@@ -182,4 +171,20 @@ class TimerPageState extends State<TimerPage> {
     return '$time';
   }
 
+  void loadData() {
+    List<String> listString = sharedPreferences.getStringList('list');
+    if(listString != null){
+      list = listString.map(
+        (item) => Dependencies.fromMap(json.decode(item))
+      ).toList();
+      setState((){});
+    }
+  }
+
+  void saveData(){
+    List<String> stringList = list.map(
+      (item) => json.encode(item.toMap()
+    )).toList();
+    print(stringList);
+  }
 }
